@@ -1,56 +1,56 @@
 def connect_camera(self):
     if self.handle is None:
-        print("开始连接相机...")
+        print("Starting camera connection...")
         
-        print("初始化 QHYCCD 资源...")
+        print("Initializing QHYCCD resources...")
         ret = InitQHYCCDResource()
         if ret == QHYCCD_SUCCESS:
-            print("QHYCCD 资源初始化成功")
+            print("QHYCCD resources initialized successfully")
         else:
-            print(f"QHYCCD 资源初始化失败，错误码: {ret}")
+            print(f"QHYCCD resource initialization failed, error code: {ret}")
             return
         
-        print("扫描相机...")
+        print("Scanning for cameras...")
         num_cameras = ScanQHYCCD()
-        print(f"找到 {num_cameras} 个相机")
+        print(f"Found {num_cameras} cameras")
         
         if num_cameras > 0:
-            print("尝试打开第一个相机...")
+            print("Attempting to open the first camera...")
             camera_id = ctypes.create_string_buffer(32)
             ret = GetQHYCCDId(ctypes.c_int(0), camera_id)
             if ret == QHYCCD_SUCCESS:
-                print(f"相机ID: {camera_id.value.decode()}")
+                print(f"Camera ID: {camera_id.value.decode()}")
                 self.handle = OpenQHYCCD(camera_id)
                 if self.handle:
-                    print("相机成功打开")
+                    print("Camera opened successfully")
                     
-                    print("设置流模式...")
-                    ret = SetQHYCCDStreamMode(self.handle, 0)  # 单帧模式
+                    print("Setting stream mode...")
+                    ret = SetQHYCCDStreamMode(self.handle, 0)  # Single frame mode
                     if ret == QHYCCD_SUCCESS:
-                        print("流模式设置成功")
+                        print("Stream mode set successfully")
                     else:
-                        print(f"流模式设置失败，错误码: {ret}")
+                        print(f"Stream mode setting failed, error code: {ret}")
                     
-                    print("初始化相机...")
+                    print("Initializing camera...")
                     ret = InitQHYCCD(self.handle)
                     if ret == QHYCCD_SUCCESS:
-                        print("相机初始化成功")
-                        self.status_label.setText('相机已连接')
+                        print("Camera initialized successfully")
+                        self.status_label.setText('Camera connected')
                     else:
-                        print(f"相机初始化失败，错误码: {ret}")
-                        self.status_label.setText('相机初始化失败')
+                        print(f"Camera initialization failed, error code: {ret}")
+                        self.status_label.setText('Camera initialization failed')
                 else:
-                    print(f"无法打开相机，错误码: {ctypes.get_last_error()}")
-                    self.status_label.setText('无法打开相机')
+                    print(f"Unable to open camera, error code: {ctypes.get_last_error()}")
+                    self.status_label.setText('Unable to open camera')
             else:
-                print(f"获取相机ID失败，错误码: {ret}")
-                self.status_label.setText('获取相机ID失败')
+                print(f"Failed to get camera ID, error code: {ret}")
+                self.status_label.setText('Failed to get camera ID')
         else:
-            print("未找到相机")
-            self.status_label.setText('未找到相机')
+            print("No cameras found")
+            self.status_label.setText('No cameras found')
     else:
-        print("相机已经连接")
-        self.status_label.setText('相机已经连接')
+        print("Camera is already connected")
+        self.status_label.setText('Camera is already connected')
 
 import sys
 import ctypes
@@ -60,15 +60,15 @@ from PyQt5.QtGui import QImage, QPixmap
 from PIL import Image
 import numpy as np
 
-# 加载 DLL
+# Load DLL
 try:
     qhyccd = ctypes.CDLL("./qhyccd.dll")
-    print("成功加载 qhyccd.dll")
+    print("Successfully loaded qhyccd.dll")
 except Exception as e:
-    print(f"加载 qhyccd.dll 失败: {e}")
+    print(f"Failed to load qhyccd.dll: {e}")
     sys.exit(1)
 
-# 定义一些常量和结构体
+# Define constants and structures
 QHYCCD_SUCCESS = 0
 QHYCCD_ERROR = 0xFFFFFFFF
 
@@ -77,7 +77,7 @@ class QHYCCD_HANDLE(ctypes.Structure):
 
 PQHYCCD_HANDLE = ctypes.POINTER(QHYCCD_HANDLE)
 
-# 定义函数原型
+# Define function prototypes
 InitQHYCCDResource = qhyccd.InitQHYCCDResource
 InitQHYCCDResource.restype = ctypes.c_uint32
 
@@ -140,14 +140,14 @@ class QHYCCDDemo(QMainWindow):
 
         layout = QVBoxLayout()
 
-        self.status_label = QLabel('未连接相机')
+        self.status_label = QLabel('Camera not connected')
         layout.addWidget(self.status_label)
 
-        connect_button = QPushButton('连接相机')
+        connect_button = QPushButton('Connect Camera')
         connect_button.clicked.connect(self.connect_camera)
         layout.addWidget(connect_button)
 
-        capture_button = QPushButton('拍摄图像')
+        capture_button = QPushButton('Capture Image')
         capture_button.clicked.connect(self.capture_image)
         layout.addWidget(capture_button)
 
@@ -158,83 +158,83 @@ class QHYCCDDemo(QMainWindow):
 
     def connect_camera(self):
         if self.handle is None:
-            print("开始连接相机...")
+            print("Starting camera connection...")
             
-            print("初始化 QHYCCD 资源...")
+            print("Initializing QHYCCD resources...")
             ret = InitQHYCCDResource()
             if ret == QHYCCD_SUCCESS:
-                print("QHYCCD 资源初始化成功")
+                print("QHYCCD resources initialized successfully")
             else:
-                print(f"QHYCCD 资源初始化失败，错误码: {ret}")
+                print(f"QHYCCD resource initialization failed, error code: {ret}")
                 return
             
-            print("扫描相机...")
+            print("Scanning for cameras...")
             num_cameras = ScanQHYCCD()
-            print(f"找到 {num_cameras} 个相机")
+            print(f"Found {num_cameras} cameras")
             
             if num_cameras > 0:
-                print("尝试打开第一个相机...")
+                print("Attempting to open the first camera...")
                 camera_id = ctypes.create_string_buffer(32)
                 ret = GetQHYCCDId(ctypes.c_int(0), camera_id)
                 if ret == QHYCCD_SUCCESS:
-                    print(f"相机ID: {camera_id.value.decode()}")
+                    print(f"Camera ID: {camera_id.value.decode()}")
                     self.handle = OpenQHYCCD(camera_id)
                     if self.handle:
-                        print("相机成功打开")
+                        print("Camera opened successfully")
                         
-                        print("设置流模式...")
-                        ret = SetQHYCCDStreamMode(self.handle, 0)  # 单帧模式
+                        print("Setting stream mode...")
+                        ret = SetQHYCCDStreamMode(self.handle, 0)  # Single frame mode
                         if ret == QHYCCD_SUCCESS:
-                            print("流模式设置成功")
+                            print("Stream mode set successfully")
                         else:
-                            print(f"流模式设置失败，错误码: {ret}")
+                            print(f"Stream mode setting failed, error code: {ret}")
                         
-                        print("初始化相机...")
+                        print("Initializing camera...")
                         ret = InitQHYCCD(self.handle)
                         if ret == QHYCCD_SUCCESS:
-                            print("相机初始化成功")
-                            self.status_label.setText('相机已连接')
+                            print("Camera initialized successfully")
+                            self.status_label.setText('Camera connected')
                         else:
-                            print(f"相机初始化失败，错误码: {ret}")
-                            self.status_label.setText('相机初始化失败')
+                            print(f"Camera initialization failed, error code: {ret}")
+                            self.status_label.setText('Camera initialization failed')
                     else:
-                        print(f"无法打开相机，错误码: {ctypes.get_last_error()}")
-                        self.status_label.setText('无法打开相机')
+                        print(f"Unable to open camera, error code: {ctypes.get_last_error()}")
+                        self.status_label.setText('Unable to open camera')
                 else:
-                    print(f"获取相机ID失败，错误码: {ret}")
-                    self.status_label.setText('获取相机ID失败')
+                    print(f"Failed to get camera ID, error code: {ret}")
+                    self.status_label.setText('Failed to get camera ID')
             else:
-                print("未找到相机")
-                self.status_label.setText('未找到相机')
+                print("No cameras found")
+                self.status_label.setText('No cameras found')
         else:
-            print("相机已经连接")
-            self.status_label.setText('相机已经连接')
+            print("Camera is already connected")
+            self.status_label.setText('Camera is already connected')
 
     def capture_image(self):
         if self.handle:
-            print("开始拍摄图像...")
+            print("Starting image capture...")
             try:
-                # 设置曝光时间为1秒
+                # Set exposure time to 1 second
                 ret = SetQHYCCDParam(self.handle, ctypes.c_int(8), ctypes.c_double(1000000))
                 if ret != QHYCCD_SUCCESS:
-                    print(f"设置曝光时间失败，错误码: {ret}")
+                    print(f"Failed to set exposure time, error code: {ret}")
                     return
 
-                # 开始曝光
+                # Start exposure
                 ret = ExpQHYCCDSingleFrame(self.handle)
                 if ret != QHYCCD_SUCCESS:
-                    print(f"开始曝光失败，错误码: {ret}")
+                    print(f"Failed to start exposure, error code: {ret}")
                     return
 
-                # 获取所需的内存大小
+                # Get required memory size
                 mem_length = GetQHYCCDMemLength(self.handle)
                 if mem_length == 0:
-                    print("获取内存大小失败")
+                    print("Failed to get memory size")
                     return
 
-                print(f"图像所需内存大小: {mem_length} 字节")
+                print(f"Required memory size for image: {mem_length} bytes")
 
-                # 分配内存
+                # Allocate memory
                 buffer = (ctypes.c_uint8 * mem_length)()
 
                 w = ctypes.c_uint32()
@@ -242,37 +242,37 @@ class QHYCCDDemo(QMainWindow):
                 bpp = ctypes.c_uint32()
                 channels = ctypes.c_uint32()
 
-                # 获取图像数据
+                # Get image data
                 ret = GetQHYCCDSingleFrame(self.handle, ctypes.byref(w), ctypes.byref(h), ctypes.byref(bpp),
                                            ctypes.byref(channels), buffer)
 
                 if ret == QHYCCD_SUCCESS:
-                    print(f'图像已拍摄: {w.value}x{h.value}, {bpp.value}位, {channels.value}通道')
-                    self.status_label.setText(f'图像已拍摄: {w.value}x{h.value}')
+                    print(f'Image captured: {w.value}x{h.value}, {bpp.value} bits, {channels.value} channels')
+                    self.status_label.setText(f'Image captured: {w.value}x{h.value}')
                     
-                    # 使用返回的图像尺寸
+                    # Use returned image dimensions
                     width = w.value
                     height = h.value
                     bytes_per_pixel = bpp.value // 8
                     
-                    print(f"图像尺寸: {width}x{height}")
-                    print(f"每像素字节数: {bytes_per_pixel}")
+                    print(f"Image size: {width}x{height}")
+                    print(f"Bytes per pixel: {bytes_per_pixel}")
                     
-                    # 将图像数据转换为numpy数组
+                    # Convert image data to numpy array
                     image_data = np.frombuffer(buffer, dtype=np.uint16 if bpp.value > 8 else np.uint8)
                     image_data = image_data[:width * height * bytes_per_pixel].reshape(width, height, -1)
                     
-                    print(f"图像数据形状: {image_data.shape}")
+                    print(f"Image data shape: {image_data.shape}")
                     
-                    # 如果是16位图像，需要进行转换
+                    # Convert 16-bit image if necessary
                     if bpp.value == 16:
                         image_data = (image_data / 256).astype(np.uint8)
                     
-                    # 如果是单通道图像，去掉多余的维度
+                    # Remove extra dimension for single-channel images
                     if channels.value == 1:
                         image_data = image_data.squeeze()
                     
-                    # 创建QImage并显示
+                    # Create QImage and display
                     if channels.value == 1:
                         qimage = QImage(image_data.data, width, height, width, QImage.Format_Grayscale8)
                     else:
@@ -280,41 +280,41 @@ class QHYCCDDemo(QMainWindow):
                     
                     pixmap = QPixmap.fromImage(qimage)
                     
-                    # 调整图像控件大小以适应图像
+                    # Adjust image widget size to fit the image
                     self.image_label.setPixmap(pixmap)
                     self.image_label.setScaledContents(True)
                     self.resize_window_to_fit_image(pixmap.size())
                 else:
-                    print(f'拍摄失败，错误码: {ret}')
-                    self.status_label.setText('拍摄失败')
+                    print(f'Capture failed, error code: {ret}')
+                    self.status_label.setText('Capture failed')
 
             except Exception as e:
-                print(f"拍摄过程中发生错误: {e}")
-                self.status_label.setText('拍摄过程中发生错误')
+                print(f"Error occurred during capture: {e}")
+                self.status_label.setText('Error occurred during capture')
 
         else:
-            print("相机未连接")
-            self.status_label.setText('请先连接相机')
+            print("Camera not connected")
+            self.status_label.setText('Please connect the camera first')
 
     def resize_window_to_fit_image(self, image_size):
-        # 获取屏幕大小
+        # Get screen size
         screen = QApplication.primaryScreen().geometry()
         
-        # 计算新的窗口大小，确保不超过屏幕大小的80%
+        # Calculate new window size, ensuring it doesn't exceed 80% of screen size
         new_width = min(image_size.width() + 40, screen.width() * 0.8)
         new_height = min(image_size.height() + 100, screen.height() * 0.8)
         
-        # 调整窗口大小
+        # Resize window
         self.resize(new_width, new_height)
         
-        # 将窗口移动到屏幕中央
+        # Move window to the center of the screen
         self.move(screen.center() - self.rect().center())
 
     def closeEvent(self, event):
         if self.handle:
-            print("关闭相机连接...")
+            print("Closing camera connection...")
             CloseQHYCCD(self.handle)
-        print("释放 QHYCCD 资源...")
+        print("Releasing QHYCCD resources...")
         ReleaseQHYCCDResource()
 
 if __name__ == '__main__':
